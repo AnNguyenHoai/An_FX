@@ -36,10 +36,10 @@ def simulate(v0, x, y, L1, L2, N):
     return dd, orders
 
 
-def find_v0(K, R, L1, L2, N):
+def find_v0(K, R, L1, L2, N, Order,LossPercent):
     # ===== TÍNH x, y =====
-    x = (R - 5 * L2) / (L1 + L2 - 1)
-    y = x + 5
+    x = (R - Order * L2) / (L1 + L2 - 1)
+    y = x + Order
 
     if x <= 0:
         raise ValueError("❌ x <= 0 → tăng R hoặc giảm L2")
@@ -49,9 +49,9 @@ def find_v0(K, R, L1, L2, N):
 
     for _ in range(80):
         mid = (low + high) / 2
-        dd, _ = simulate(mid, x, y, L1, L2, N)
+        dd, _ = simulate(mid, x, R/3, L1, L2, N)
 
-        if dd > K / 4:
+        if dd > K / LossPercent:
             high = mid
         else:
             low = mid
@@ -100,8 +100,10 @@ if __name__ == "__main__":
         L1 = int(input("Số lệnh L1: "))
         L2 = int(input("Số lệnh L2: "))
         N = float(input("Giá kiểm tra DD (N): "))
+        Ord = float(input("Quãng giữa L1 và L2: "))
+        LossPercent = float(input("Có thể âm bao nhiêu lần vốn: "))
 
-        x, y, v0, orders, dd = find_v0(K, R, L1, L2, N)
+        x, y, v0, orders, dd = find_v0(K, R, L1, L2, N, Ord, LossPercent)
 
         print_result(x, y, v0, orders, dd, K, N)
 
